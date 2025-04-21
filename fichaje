@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fichaje de Empleados</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; background: #f4f4f4; }
+    h1 { color: #333; }
+    input, button {
+      padding: 0.75rem;
+      font-size: 1rem;
+      margin: 0.5rem 0.25rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button { background: #007bff; color: white; border: none; }
+    button:hover { background: #0056b3; }
+    table {
+      width: 100%;
+      margin-top: 2rem;
+      border-collapse: collapse;
+      background: white;
+    }
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    th { background: #eee; }
+  </style>
+</head>
+<body>
+  <h1>Fichaje de Empleados</h1>
+
+  <input type="text" id="nombre" placeholder="Tu nombre" />
+  <br>
+  <button onclick="fichar('Trabajando')">Trabajando</button>
+  <button onclick="fichar('Baño')">Baño</button>
+  <button onclick="fichar('Pausa comida')">Pausa comida</button>
+  <button onclick="fichar('Finaliza jornada')">Finaliza jornada</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Estado</th>
+        <th>Hora</th>
+      </tr>
+    </thead>
+    <tbody id="registros"></tbody>
+  </table>
+
+  <script>
+    function fichar(estado) {
+      const nombre = document.getElementById('nombre').value.trim();
+      if (!nombre) {
+        alert('Introduce tu nombre');
+        return;
+      }
+      const ahora = new Date().toLocaleString();
+      const fila = `<tr><td>${nombre}</td><td>${estado}</td><td>${ahora}</td></tr>`;
+      document.getElementById('registros').innerHTML += fila;
+    }
+  </script>
+</body>
+</html>
