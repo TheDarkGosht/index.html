@@ -28,6 +28,10 @@
       text-align: center;
     }
     th { background: #eee; }
+    .contador {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+    }
   </style>
 </head>
 <body>
@@ -40,27 +44,71 @@
   <button onclick="fichar('Pausa comida')">Pausa comida</button>
   <button onclick="fichar('Finaliza jornada')">Finaliza jornada</button>
 
+  <div id="hora-espanola"></div>
+  <div id="contador" class="contador"></div>
+
   <table>
     <thead>
       <tr>
         <th>Nombre</th>
         <th>Estado</th>
         <th>Hora</th>
+        <th>Tiempo en estado</th>
       </tr>
     </thead>
     <tbody id="registros"></tbody>
   </table>
 
   <script>
+    let tiempoEstado = 0;
+    let intervaloContador;
+    let estadoActual = '';
+    let horaInicio;
+
+    // Actualizar hora española
+    function mostrarHoraEspañola() {
+      const options = { timeZone: 'Europe/Madrid', hour12: true };
+      const fecha = new Date().toLocaleString('es-ES', options);
+      document.getElementById('hora-espanola').innerHTML = 'Hora actual (España): ' + fecha;
+    }
+
+    // Mostrar la hora española cada segundo
+    setInterval(mostrarHoraEspañola, 1000);
+
+    // Iniciar fichaje
     function fichar(estado) {
       const nombre = document.getElementById('nombre').value.trim();
       if (!nombre) {
         alert('Introduce tu nombre');
         return;
       }
+
+      // Detener el contador anterior si ya había uno en curso
+      if (intervaloContador) {
+        clearInterval(intervaloContador);
+        document.getElementById('contador').innerHTML = '';
+        tiempoEstado = 0;
+      }
+
+      // Mostrar el estado y la hora de inicio
       const ahora = new Date().toLocaleString();
-      const fila = `<tr><td>${nombre}</td><td>${estado}</td><td>${ahora}</td></tr>`;
+      const fila = `<tr><td>${nombre}</td><td>${estado}</td><td>${ahora}</td><td id="tiempo-${estado}">0:00</td></tr>`;
       document.getElementById('registros').innerHTML += fila;
+
+      // Iniciar el contador
+      estadoActual = estado;
+      horaInicio = new Date();
+      iniciarContador();
+    }
+
+    // Iniciar contador
+    function iniciarContador() {
+      intervaloContador = setInterval(function () {
+        tiempoEstado = Math.floor((new Date() - horaInicio) / 1000);
+        const minutos = Math.floor(tiempoEstado / 60);
+        const segundos = tiempoEstado % 60;
+        document.getElementById(`tiempo-${estadoActual}`).innerText = `${minutos}:${segundos < 10 ? '0' : ''}${segundos}`;
+      }, 1000);
     }
   </script>
 </body>
