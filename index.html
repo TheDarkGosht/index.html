@@ -60,7 +60,6 @@
   </table>
 
   <script>
-    let tiempoEstado = {};
     let intervaloContador;
     let estadoActual = '';
     let horaInicio;
@@ -84,27 +83,24 @@
         clearInterval(intervaloContador);
       }
 
-      if (!tiempoEstado[estado]) {
-        tiempoEstado[estado] = 0;
-      }
-
       const ahora = new Date().toLocaleString();
-      const fila = `<tr><td>${nombre}</td><td>${estado}</td><td>${ahora}</td><td id="tiempo-${estado}">0:00</td></tr>`;
+      const filaId = `fila-${Date.now()}`;
+      const fila = `<tr id="${filaId}"><td>${nombre}</td><td>${estado}</td><td>${ahora}</td><td id="tiempo-${filaId}">0:00</td></tr>`;
       document.getElementById('registros').innerHTML += fila;
 
       estadoActual = estado;
       horaInicio = new Date();
-      iniciarContador();
+      iniciarContador(filaId);
     }
 
-    function iniciarContador() {
+    function iniciarContador(filaId) {
       intervaloContador = setInterval(function () {
-        const tiempoTotal = tiempoEstado[estadoActual] + Math.floor((new Date() - horaInicio) / 1000);
-        const horas = Math.floor(tiempoTotal / 3600);
-        const minutos = Math.floor((tiempoTotal % 3600) / 60);
-        const segundos = tiempoTotal % 60;
+        const tiempoEstado = Math.floor((new Date() - horaInicio) / 1000);
+        const horas = Math.floor(tiempoEstado / 3600);
+        const minutos = Math.floor((tiempoEstado % 3600) / 60);
+        const segundos = tiempoEstado % 60;
         const formatoTiempo = horas > 0 ? `${horas}:${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}` : `${minutos}:${segundos.toString().padStart(2, '0')}`;
-        document.getElementById(`tiempo-${estadoActual}`).innerText = formatoTiempo;
+        document.getElementById(`tiempo-${filaId}`).innerText = formatoTiempo;
       }, 1000);
     }
   </script>
